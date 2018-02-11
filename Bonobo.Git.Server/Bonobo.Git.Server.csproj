@@ -328,6 +328,7 @@
     <Compile Include="Helpers\RepositoryCommitModelHelpers.cs" />
     <Compile Include="IDbFactory.cs" />
     <Compile Include="Models\RepositoryCommitTitle.cs" />
+    <Compile Include="Modules\SecurityModule.cs" />
     <Compile Include="Owin\NativeMethods.cs" />
     <Compile Include="Owin\WindowsAuthenticationDefaults.cs" />
     <Compile Include="Owin\WindowsAuthenticationExtensions.cs" />
