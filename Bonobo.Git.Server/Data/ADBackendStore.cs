@@ -2,15 +2,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Web;
 using System.Collections;
-using System.Web.Hosting;
-using Bonobo.Git.Server.Configuration;
 using Bonobo.Git.Server.Helpers;
 using Serilog;
 
