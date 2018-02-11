@@ -4,7 +4,7 @@ namespace Bonobo.Git.Server.Security
 {
     public interface ITokenizer
     {
-        bool Decode(VemToken token);
+        bool Decode(string token);
         VemToken Encode();
     }
 }

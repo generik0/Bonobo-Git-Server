@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Globalization;
 using System.Text;
 using Bonobo.Git.Server.Models;
 using Jose;
@@ -22,14 +23,14 @@ namespace Bonobo.Git.Server.Security
             var creation = DateTime.UtcNow;
             
 
-            var actual = JWT.Encode(creation.ToString("o"), _sigyn, JwsAlgorithm.HS256);
+            var actual = JWT.Encode(creation.ToString(CultureInfo.InvariantCulture), _sigyn, JwsAlgorithm.HS256);
             return new VemToken {Token = actual};
         }
 
-        public bool Decode(VemToken token)
+        public bool Decode(string token)
         {
-            var payload = JWT.Decode(token.Token, _sigyn);
-            if (!DateTime.TryParse(payload, out var actual))
+            var payload = JWT.Decode(token, _sigyn, JwsAlgorithm.HS256);
+            if (!DateTime.TryParse(payload, CultureInfo.InvariantCulture, DateTimeStyles.None, out var actual))
             {
                 return false;
             }

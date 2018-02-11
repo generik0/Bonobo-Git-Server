@@ -5,6 +5,7 @@ using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 using Nancy;
+using Newtonsoft.Json;
 
 namespace Bonobo.Git.Server.Modules
 {
@@ -23,6 +24,26 @@ namespace Bonobo.Git.Server.Modules
             TeamRepository = teamRepository;
             Tokenizer = tokenizer;
             Post["Security/login"] = _ => Login();
+            Post["Security/Authorize"] = _ => IsAuthorized();
+        }
+
+        private Response IsAuthorized()
+        {
+            try
+            {
+                var token = Request.Query?.Token?.ToString();
+                if(string.IsNullOrWhiteSpace(token))
+                {
+                    Response.AsJson(new LoginResultModel {Exception = "No token provided"}, HttpStatusCode.Forbidden);
+                }
+                var actual = Tokenizer.Decode(token);
+                return actual ? HttpStatusCode.Accepted : HttpStatusCode.Forbidden;
+
+            }
+            catch (Exception exception)
+            {
+                return Response.AsJson(new LoginResultModel { Exception = exception.Message }, HttpStatusCode.Forbidden);
+            }
         }
 
         private  Response Login()
