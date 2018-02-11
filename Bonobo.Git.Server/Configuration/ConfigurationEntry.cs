@@ -27,10 +27,9 @@ namespace Bonobo.Git.Server.Configuration
                 {
                     try
                     {
-
-                        if (!File.Exists(_configPath))
+                        if(!File.Exists(_configPath))
                         {
-                            return new Entry();
+                            return _current = new Entry();
                         }
                         using (var stream = File.Open(_configPath, FileMode.Open))
                         {

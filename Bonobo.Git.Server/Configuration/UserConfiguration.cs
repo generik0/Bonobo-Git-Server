@@ -27,14 +27,15 @@ namespace Bonobo.Git.Server.Configuration
         public string LinksRegex { get; set; }
         public string LinksUrl { get; set; }
 
-        public UserConfiguration()
+        public string Repositories
         {
-            
+            get
+            {
+                return !string.IsNullOrWhiteSpace(RepositoryPath) ? Path.IsPathRooted(RepositoryPath)
+                       ? RepositoryPath
+                       : HostingEnvironment.MapPath(RepositoryPath) : null;
+            }
         }
-
-        public string Repositories => !string.IsNullOrWhiteSpace(RepositoryPath) ? Path.IsPathRooted(RepositoryPath)
-            ? RepositoryPath
-            : HostingEnvironment.MapPath(RepositoryPath) : null;
 
         public bool HasSiteFooterMessage
         {
