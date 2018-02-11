@@ -429,7 +429,7 @@
     <Compile Include="FileDisplayHandler.cs" />
     <Compile Include="Security\PasswordService.cs" />
     <Compile Include="FilterProviders\FilterAttributeFilterProvider.cs" />
-    <Compile Include="ViewModules\LoginResultModel.cs" />
+    <Compile Include="Models\LoginResultModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\Git\antiword.exe" />

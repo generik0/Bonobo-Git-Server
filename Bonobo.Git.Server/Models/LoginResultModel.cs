@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Bonobo.Git.Server.Data;
-using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 
-namespace Bonobo.Git.Server.ViewModules
+namespace Bonobo.Git.Server.Models
 {
     public class LoginResultModel
     {

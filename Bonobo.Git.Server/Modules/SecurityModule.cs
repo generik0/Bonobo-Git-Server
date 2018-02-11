@@ -2,8 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Bonobo.Git.Server.Data;
+using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
-using Bonobo.Git.Server.ViewModules;
 using Nancy;
 
 namespace Bonobo.Git.Server.Modules
@@ -27,7 +27,7 @@ namespace Bonobo.Git.Server.Modules
         {
             try
             {
-                //e.g.http://localhost:51233/api/security/login?Username=admin&Password=admin
+                //e.g. http://localhost:8080/Bonobo.Git.Server/api/security/login?Tor=admin&Freja=admin
                 string userName = Request.Query.Tor?.ToString();    
                 string password = Request.Query.Freja?.ToString();
                 var result = MembershipService.ValidateUser(userName, password);
