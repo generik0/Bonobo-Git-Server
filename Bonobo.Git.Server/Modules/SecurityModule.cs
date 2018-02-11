@@ -26,13 +26,13 @@ namespace Bonobo.Git.Server.Modules
                 //e.g.http://localhost:51233/api/security/login?Username=admin&Password=admin
                 string userName = Request.Query.Username?.ToString();    
                 string password = Request.Query.Password?.ToString();
-                ValidationResult result = MembershipService.ValidateUser(userName, password);
+                var result = MembershipService.ValidateUser(userName, password);
                 if (result != ValidationResult.Success)
                 {
                     return Response.AsJson(result, HttpStatusCode.Forbidden);
                 }
 
-                UserModel userModel = MembershipService.GetUserModel(userName);
+                var userModel = MembershipService.GetUserModel(userName);
                 var roles = RoleProvider.GetRolesForUser(userModel.Id);
                 return Response.AsJson((result, userModel, roles));
             }
