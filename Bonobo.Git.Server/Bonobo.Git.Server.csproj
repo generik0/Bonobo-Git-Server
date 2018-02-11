@@ -282,6 +282,7 @@
     <Compile Include="Attributes\RepositoryNameNormalizerAttribute.cs" />
     <Compile Include="Attributes\IsValidRegexAttribute.cs" />
     <Compile Include="Attributes\UniqueRepoNameAttribute.cs" />
+    <Compile Include="AutofacDbFactory.cs" />
     <Compile Include="Configuration\ActiveDirectorySettings.cs" />
     <Compile Include="Configuration\AuthenticationSettings.cs" />
     <Compile Include="Configuration\DiagnosticReporter.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Helpers\ADHelper.cs" />
     <Compile Include="Helpers\MembershipHelper.cs" />
     <Compile Include="Helpers\RepositoryCommitModelHelpers.cs" />
+    <Compile Include="IDbFactory.cs" />
     <Compile Include="Models\RepositoryCommitTitle.cs" />
     <Compile Include="Owin\NativeMethods.cs" />
     <Compile Include="Owin\WindowsAuthenticationDefaults.cs" />

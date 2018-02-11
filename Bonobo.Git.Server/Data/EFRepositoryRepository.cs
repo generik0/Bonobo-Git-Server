@@ -11,12 +11,17 @@ namespace Bonobo.Git.Server.Data
 {
     public class EFRepositoryRepository : IRepositoryRepository
     {
-        
-        public Func<BonoboGitServerContext> CreateContext { get; set; }
+
+        private readonly IDbFactory _dbFactory;
+        public EFRepositoryRepository(IDbFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
+        public BonoboGitServerContext CreateContext => _dbFactory.Create();
 
         public IList<RepositoryModel> GetAllRepositories()
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 var dbrepos = db.Repositories.Select(repo => new
                 {
@@ -71,7 +76,7 @@ namespace Bonobo.Git.Server.Data
 
         public RepositoryModel GetRepository(Guid id)
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 return ConvertToModel(db.Repositories.First(i => i.Id.Equals(id)));
             }
@@ -79,7 +84,7 @@ namespace Bonobo.Git.Server.Data
 
         public void Delete(Guid id)
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 var repo = db.Repositories.FirstOrDefault(i => i.Id == id);
                 if (repo != null)
@@ -104,7 +109,7 @@ namespace Bonobo.Git.Server.Data
             if (model == null) throw new ArgumentException("model");
             if (model.Name == null) throw new ArgumentException("name");
 
-            using (var database = CreateContext())
+            using (var database = CreateContext)
             {
                 model.EnsureCollectionsAreValid();
                 model.Id = Guid.NewGuid();
@@ -146,7 +151,7 @@ namespace Bonobo.Git.Server.Data
             if (model == null) throw new ArgumentException("model");
             if (model.Name == null) throw new ArgumentException("name");
 
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 var repo = db.Repositories.FirstOrDefault(i => i.Id == model.Id);
                 if (repo != null)

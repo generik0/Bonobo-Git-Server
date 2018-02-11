@@ -18,7 +18,8 @@ public class FilterAttributeFilterProvider : System.Web.Mvc.FilterAttributeFilte
         foreach (var attribute in attributes)
         {
             //_builder.BuildUp(attribute.GetType(), attribute);
-            _builder.RegisterType(attribute.GetType()).OnActivated(e => e.Context.InjectUnsetProperties(e.Instance));
+            //_builder.RegisterType(attribute.GetType()).OnActivated(e => e.Context.InjectUnsetProperties(e.Instance)).PropertiesAutowired();
+            _builder.RegisterType(attribute.GetType()).PropertiesAutowired();
         }
 
         return attributes;
@@ -30,7 +31,7 @@ public class FilterAttributeFilterProvider : System.Web.Mvc.FilterAttributeFilte
         foreach (var attribute in attributes)
         {
             //_builder.BuildUp(attribute.GetType(), attribute);
-            _builder.RegisterType(attribute.GetType()).OnActivated(e => e.Context.InjectUnsetProperties(e.Instance));
+            _builder.RegisterType(attribute.GetType()).PropertiesAutowired();
         }
 
         return attributes;

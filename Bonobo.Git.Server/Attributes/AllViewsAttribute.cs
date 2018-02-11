@@ -35,6 +35,11 @@ namespace Bonobo.Git.Server.Attributes
         
         public IRepositoryPermissionService RepoPermissions { get; set; }
 
+        public AllViewsFilter(IRepositoryPermissionService repoPermissions)
+        {
+            RepoPermissions = repoPermissions;
+        }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             filterContext.Controller.ViewBag.PermittedRepositories = PopulateRepoGoToList(filterContext.HttpContext.User.Id(), filterContext.Controller.ControllerContext);

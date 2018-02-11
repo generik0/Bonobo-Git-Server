@@ -20,6 +20,12 @@ namespace Bonobo.Git.Server.Configuration
     {
         private readonly StringBuilder _report = new StringBuilder();
         private readonly UserConfiguration _userConfig = UserConfiguration.Current;
+        private readonly IDbFactory _dbFactory;
+
+        public DiagnosticReporter(IDbFactory dbFactory)
+        {
+            _dbFactory = dbFactory;
+        }
 
         public string GetVerificationReport()
         {
@@ -186,7 +192,7 @@ namespace Bonobo.Git.Server.Configuration
 
             if (AppSetting("MembershipService") == "Internal")
             {
-                SafelyReport("User count", () => new EFMembershipService { CreateContext = () => new BonoboGitServerContext() }.GetAllUsers().Count);
+                SafelyReport("User count", () => new EFMembershipService ( _dbFactory).GetAllUsers().Count);
             }
             else
             {

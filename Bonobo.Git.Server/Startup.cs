@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -40,12 +41,44 @@ namespace Bonobo.Git.Server
     {
 
         public IContainer Container;
-        protected ContainerBuilder Builder;
+        protected ContainerBuilder Builder = new ContainerBuilder();
 
         public void Configuration(IAppBuilder app)
         {
             Application_Start();
             Container = Builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(Container));
+            AreaRegistration.RegisterAllAreas();
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            UserConfiguration.Initialize();
+
+
+
+            GlobalFilters.Filters.Add(Container.Resolve<AllViewsFilter>());
+
+            var connectionString = WebConfigurationManager.ConnectionStrings["BonoboGitServerContext"];
+            if (connectionString.ProviderName.ToLowerInvariant() == "system.data.sqlite")
+            {
+                if (!connectionString.ConnectionString.ToLowerInvariant().Contains("binaryguid=false"))
+                {
+                    Log.Error("Please ensure that the sqlite connection string contains 'BinaryGUID=false;'.");
+                    throw new ConfigurationErrorsException("Please ensure that the sqlite connection string contains 'BinaryGUID=false;'.");
+                }
+            }
+
+            try
+            {
+                AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
+                new AutomaticUpdater().Run();
+                new RepositorySynchronizer().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Startup exception");
+                throw;
+            }
+            app.UseAutofacMvc();
             RecoveryDataPathSetup();
             app.Map("/api", branch =>
             {
@@ -72,39 +105,14 @@ namespace Bonobo.Git.Server
             Builder.RegisterSource(new ViewRegistrationSource());
             Builder.RegisterFilterProvider();
 
-
+            Builder.RegisterAssemblyTypes(mvcAssembly)
+                .Where(type => typeof(Attribute).IsAssignableFrom(type))
+                .AsSelf()
+                .SingleInstance();
+            
             ConfigureLogging();
             Log.Information("Bonobo starting");
-
-            AreaRegistration.RegisterAllAreas();
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            UserConfiguration.Initialize();
             RegisterDependencyResolver();
-            GlobalFilters.Filters.Add((AllViewsFilter)DependencyResolver.Current.GetService<AllViewsFilter>());
-
-            var connectionString = WebConfigurationManager.ConnectionStrings["BonoboGitServerContext"];
-            if (connectionString.ProviderName.ToLowerInvariant() == "system.data.sqlite")
-            {
-                if (!connectionString.ConnectionString.ToLowerInvariant().Contains("binaryguid=false"))
-                {
-                    Log.Error("Please ensure that the sqlite connection string contains 'BinaryGUID=false;'.");
-                    throw new ConfigurationErrorsException("Please ensure that the sqlite connection string contains 'BinaryGUID=false;'.");
-                }
-            }
-
-            try
-            {
-                AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
-
-                new AutomaticUpdater().Run();
-                new RepositorySynchronizer().Run();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Startup exception");
-                throw;
-            }
         }
 
         private static void ConfigureLogging()
@@ -130,33 +138,37 @@ namespace Bonobo.Git.Server
             switch (AuthenticationSettings.MembershipService.ToLowerInvariant())
             {
                 case "activedirectory":
-                    Builder.RegisterType<IMembershipService>().As<ADMembershipService>().PropertiesAutowired(); ;
-                    Builder.RegisterType<IRoleProvider>().As<ADRoleProvider>().PropertiesAutowired(); ;
-                    Builder.RegisterType<ITeamRepository>().As<ADTeamRepository>().PropertiesAutowired(); ;
-                    Builder.RegisterType<IRepositoryRepository>().As<ADRepositoryRepository>().PropertiesAutowired(); ;
-                    Builder.RegisterType<IRepositoryPermissionService>().As<RepositoryPermissionService>().PropertiesAutowired(); ;
+                    Builder.RegisterType<ADMembershipService>().As<IMembershipService>().PropertiesAutowired(); ;
+                    Builder.RegisterType<ADRoleProvider>().As<IRoleProvider>().PropertiesAutowired(); ;
+                    Builder.RegisterType<ADTeamRepository>().As<ITeamRepository>().PropertiesAutowired(); ;
+                    Builder.RegisterType<ADRepositoryRepository>().As<IRepositoryRepository>().PropertiesAutowired(); ;
+                    Builder.RegisterType<RepositoryPermissionService>().As<IRepositoryPermissionService>().PropertiesAutowired(); ;
                     break;
                 case "internal":
-                    Builder.RegisterType<IMembershipService>().As<EFMembershipService>().PropertiesAutowired(); ;
-                    Builder.RegisterType<IRoleProvider>().As<EFRoleProvider>().PropertiesAutowired(); ;
-                    Builder.RegisterType<ITeamRepository>().As<EFTeamRepository>().PropertiesAutowired(); ;
-                    Builder.RegisterType<IRepositoryRepository>().As<EFRepositoryRepository>().PropertiesAutowired(); ;
-                    Builder.RegisterType<IRepositoryPermissionService>().As<RepositoryPermissionService>().PropertiesAutowired(); ;
+                    Builder.RegisterType<EFMembershipService>().As<IMembershipService>().PropertiesAutowired(); ;
+                    Builder.RegisterType<EFRoleProvider>().As<IRoleProvider>().PropertiesAutowired(); ;
+                    Builder.RegisterType<EFTeamRepository>().As<ITeamRepository>().PropertiesAutowired(); ;
+                    Builder.RegisterType<EFRepositoryRepository>().As<IRepositoryRepository>().PropertiesAutowired(); ;
+                    Builder.RegisterType<RepositoryPermissionService>().As<IRepositoryPermissionService>().PropertiesAutowired();
+                    
                     break;
                 default:
                     throw new ArgumentException("Missing declaration in web.config", "MembershipService");
             }
 
+            Builder.RegisterType<BonoboGitServerContext>().AsSelf().InstancePerDependency();
+            Builder.Register(c => new AutofacDbFactory(c.Resolve<IComponentContext>())).As<IDbFactory>().SingleInstance();
+
             switch (AuthenticationSettings.AuthenticationProvider.ToLowerInvariant())
             {
                 case "windows":
-                    Builder.RegisterType<IAuthenticationProvider>().As<WindowsAuthenticationProvider>().PropertiesAutowired(); ;
+                    Builder.RegisterType<WindowsAuthenticationProvider>().As<IAuthenticationProvider>().PropertiesAutowired(); ;
                     break;
                 case "cookies":
-                    Builder.RegisterType<IAuthenticationProvider>().As<CookieAuthenticationProvider>().PropertiesAutowired(); ;
+                    Builder.RegisterType<CookieAuthenticationProvider>().As<IAuthenticationProvider>().PropertiesAutowired(); ;
                     break;
                 case "federation":
-                    Builder.RegisterType<IAuthenticationProvider>().As<FederationAuthenticationProvider>().PropertiesAutowired(); ;
+                    Builder.RegisterType<FederationAuthenticationProvider>().As<IAuthenticationProvider>().PropertiesAutowired(); ;
                     break;
                 default:
                     throw new ArgumentException("Missing declaration in web.config", "AuthenticationProvider");
@@ -172,21 +184,16 @@ namespace Bonobo.Git.Server
                     RepositoriesDirPath = UserConfiguration.Current.Repositories,
                 }).PropertiesAutowired(); ;
 
-            Builder.RegisterType<IDatabaseResetManager>().As<DatabaseResetManager>().PropertiesAutowired(); ;
+            Builder.RegisterType<DatabaseResetManager>().As<IDatabaseResetManager>().PropertiesAutowired(); ;
 
             if (AppSettings.IsPushAuditEnabled)
             {
                 EnablePushAuditAnalysis(Builder);
             }
 
-            Builder.RegisterType<IGitService>().As<GitServiceExecutor>().PropertiesAutowired(); ;
-
-            var oldProvider = FilterProviders.Providers.Single(f => f is System.Web.Mvc.FilterAttributeFilterProvider);
-            FilterProviders.Providers.Remove(oldProvider);
-
-            var provider = new FilterAttributeFilterProvider(Builder);
-            FilterProviders.Providers.Add(provider);
+            Builder.RegisterType<GitServiceExecutor>().As<IGitService>().PropertiesAutowired(); ;
         }
+        
 
         private static void EnablePushAuditAnalysis(ContainerBuilder builder)
         {
@@ -195,10 +202,10 @@ namespace Bonobo.Git.Server
             if (isReceivePackRecoveryProcessEnabled)
             {
                 // git service execution durability registrations to enable receive-pack hook execution after failures
-                builder.RegisterType<IGitService>().As<DurableGitServiceResult>().PropertiesAutowired(); ;
-                builder.RegisterType<IHookReceivePack>().As<ReceivePackRecovery>().PropertiesAutowired(); ;
-                builder.RegisterType<IRecoveryFilePathBuilder>().As<AutoCreateMissingRecoveryDirectories>().PropertiesAutowired(); ;
-                builder.RegisterType<IRecoveryFilePathBuilder>().As<OneFolderRecoveryFilePathBuilder>().PropertiesAutowired(); ;
+                builder.RegisterType<DurableGitServiceResult> ().As<IGitService>().PropertiesAutowired(); ;
+                builder.RegisterType<ReceivePackRecovery>().As<IHookReceivePack>().PropertiesAutowired(); ;
+                builder.RegisterType<AutoCreateMissingRecoveryDirectories>().As<IRecoveryFilePathBuilder>().PropertiesAutowired(); ;
+                builder.RegisterType<OneFolderRecoveryFilePathBuilder>().As<IRecoveryFilePathBuilder>().PropertiesAutowired(); ;
                 builder.RegisterInstance(new NamedArguments.FailedPackWaitTimeBeforeExecution(TimeSpan.FromSeconds(5 * 60))).PropertiesAutowired(); ;
 
                 builder.RegisterInstance(new NamedArguments.ReceivePackRecoveryDirectory(
@@ -208,12 +215,12 @@ namespace Bonobo.Git.Server
             }
 
             // base git service executor
-            builder.RegisterType<IGitService>().As<ReceivePackParser>().PropertiesAutowired(); ;
+            builder.RegisterType<ReceivePackParser>().As<IGitService>().PropertiesAutowired(); ;
             builder.RegisterType<GitServiceResultParser>().As<GitServiceResultParser>().PropertiesAutowired(); ;
 
             // receive pack hooks
-            builder.RegisterType<IHookReceivePack>().As<AuditPusherToGitNotes>().PropertiesAutowired(); ;
-            builder.RegisterType<IHookReceivePack>().As<NullReceivePackHook>().PropertiesAutowired(); ;
+            builder.RegisterType<AuditPusherToGitNotes>().As<IHookReceivePack>().PropertiesAutowired(); ;
+            builder.RegisterType<NullReceivePackHook>().As<IHookReceivePack>().PropertiesAutowired(); ;
         }
 
         private static string GetRootPath(string path)
@@ -224,14 +231,16 @@ namespace Bonobo.Git.Server
         }
         private void RecoveryDataPathSetup()
         {
+            if(!AppSettings.IsPushAuditEnabled) return;
+
             var isReceivePackRecoveryProcessEnabled = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["RecoveryDataPath"]);
             // run receive-pack recovery if possible
             if (isReceivePackRecoveryProcessEnabled)
             {
-                var recoveryProcess = Container.Resolve<ReceivePackRecovery>(
+                ReceivePackRecovery recoveryProcess = Container.Resolve<IHookReceivePack>(
                     new NamedParameter(
                         "failedPackWaitTimeBeforeExecution",
-                        new NamedArguments.FailedPackWaitTimeBeforeExecution(TimeSpan.FromSeconds(0))));
+                        new NamedArguments.FailedPackWaitTimeBeforeExecution(TimeSpan.FromSeconds(0)))) as ReceivePackRecovery;
 
                 try
                 {

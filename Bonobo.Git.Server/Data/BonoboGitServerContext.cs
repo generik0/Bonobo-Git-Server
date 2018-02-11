@@ -12,7 +12,7 @@ namespace Bonobo.Git.Server.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<User> Users { get; set; }
 
-
+        
         static BonoboGitServerContext()
         {
             Database.SetInitializer<BonoboGitServerContext>(null);

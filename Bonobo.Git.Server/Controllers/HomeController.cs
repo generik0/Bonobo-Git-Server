@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Web;
-using System.Web.Caching;
 using System.Web.Mvc;
 
 using Bonobo.Git.Server.App_GlobalResources;
@@ -16,8 +13,6 @@ using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 
 using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
-
 using Bonobo.Git.Server.Owin.Windows;
 using System.Configuration;
 
@@ -25,7 +20,8 @@ namespace Bonobo.Git.Server.Controllers
 {
     public class HomeController : Controller
     {
-        
+        public IDbFactory DbFactory { get; set; }
+
         public IMembershipService MembershipService { get; set; }
 
         
@@ -224,7 +220,7 @@ namespace Bonobo.Git.Server.Controllers
         {
             if (Request.IsLocal)
             {
-                var verifier = new DiagnosticReporter();
+                var verifier = new DiagnosticReporter(DbFactory);
                 return Content(verifier.GetVerificationReport(), "text/plain", Encoding.UTF8);
             }
             else

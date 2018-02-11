@@ -12,18 +12,20 @@ namespace Bonobo.Git.Server.Security
 {
     public class EFMembershipService : IMembershipService
     {
-        
-        public Func<BonoboGitServerContext> CreateContext { get; set; }
 
+        private readonly IDbFactory _dbFactory;
+        
+        public BonoboGitServerContext CreateContext => _dbFactory.Create();
         private readonly IPasswordService _passwordService;
 
-        public EFMembershipService()
+        public EFMembershipService(IDbFactory dbFactory)
         {
-            // set up dependencies
+            _dbFactory = dbFactory;
+
             Action<string, string> updateUserPasswordHook =
                 (username, password) =>
                 {
-                    using (var db = CreateContext())
+                    using (var db = CreateContext)
                     {
                         var user = db.Users.FirstOrDefault(i => i.Username == username);
                         if (user != null)
@@ -48,7 +50,7 @@ namespace Bonobo.Git.Server.Security
             Log.Verbose("EF: Validating user {UserName}", username);
 
             username = username.ToLowerInvariant();
-            using (var database = CreateContext())
+            using (var database = CreateContext)
             {
                 var user = database.Users.FirstOrDefault(i => i.Username == username);
                 if (user != null)
@@ -82,7 +84,7 @@ namespace Bonobo.Git.Server.Security
             if (id == Guid.Empty) throw new ArgumentException("Id must be a proper Guid", "id");
 
             username = username.ToLowerInvariant();
-            using (var database = CreateContext())
+            using (var database = CreateContext)
             {
                 var user = new User
                 {
@@ -109,7 +111,7 @@ namespace Bonobo.Git.Server.Security
 
         public IList<UserModel> GetAllUsers()
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 return db.Users.Include("Roles").ToList().Select(item => new UserModel
                 {
@@ -124,7 +126,7 @@ namespace Bonobo.Git.Server.Security
 
         public int UserCount()
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 return db.Users.Count();
             }
@@ -144,7 +146,7 @@ namespace Bonobo.Git.Server.Security
 
         public UserModel GetUserModel(Guid id)
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 var user = db.Users.FirstOrDefault(i => i.Id == id);
                 return GetUserModel(user);
@@ -153,7 +155,7 @@ namespace Bonobo.Git.Server.Security
 
         public UserModel GetUserModel(string username)
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 username = username.ToLowerInvariant();
                 var user = db.Users.FirstOrDefault(i => i.Username == username);
@@ -163,7 +165,7 @@ namespace Bonobo.Git.Server.Security
 
         public void UpdateUser(Guid id, string username, string givenName, string surname, string email, string password)
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 var user = db.Users.FirstOrDefault(i => i.Id == id);
                 if (user != null)
@@ -184,7 +186,7 @@ namespace Bonobo.Git.Server.Security
 
         public void DeleteUser(Guid id)
         {
-            using (var db = CreateContext())
+            using (var db = CreateContext)
             {
                 var user = db.Users.FirstOrDefault(u => u.Id == id);
                 if (user != null)
