@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.Security;
+using Bonobo.Git.Server.ViewModules;
 using Nancy;
 
 namespace Bonobo.Git.Server.Modules
@@ -41,13 +42,19 @@ namespace Bonobo.Git.Server.Modules
                 {
                     Id = x.Id,
                     Name = x.Name,
-                });
-                var valueTuple = (Result: result, User: userModel, Roles: roles, Teams: teams);
-                return Response.AsJson(valueTuple);
+                }).ToArray();
+                var vm = new LoginResultModel
+                {
+                    Result = result,
+                    UserModel = userModel,
+                    Roles = roles,
+                    Teams = teams
+                };
+                return Response.AsJson(vm);
             }
             catch (Exception exception)
             {
-                return Response.AsJson(exception, HttpStatusCode.Forbidden);
+                return Response.AsJson(new LoginResultModel{Exception = exception.Message}, HttpStatusCode.Forbidden);
             }
             
         }
