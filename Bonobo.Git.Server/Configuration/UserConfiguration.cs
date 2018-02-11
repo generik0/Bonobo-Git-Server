@@ -6,10 +6,10 @@ using System.Xml.Serialization;
 
 namespace Bonobo.Git.Server.Configuration
 {
-    using Bonobo.Git.Server.App_GlobalResources;
+    using App_GlobalResources;
     using System.Web.Hosting;
 
-    [XmlRootAttribute(ElementName = "Configuration", IsNullable = false)]
+    [XmlRoot(ElementName = "Configuration", IsNullable = false)]
     public class UserConfiguration : ConfigurationEntry<UserConfiguration>
     {
         public bool AllowAnonymousPush { get; set; }
@@ -27,15 +27,14 @@ namespace Bonobo.Git.Server.Configuration
         public string LinksRegex { get; set; }
         public string LinksUrl { get; set; }
 
-        public string Repositories
+        public UserConfiguration()
         {
-            get
-            {
-                return Path.IsPathRooted(RepositoryPath)
-                       ? RepositoryPath
-                       : HostingEnvironment.MapPath(RepositoryPath);
-            }
+            
         }
+
+        public string Repositories => !string.IsNullOrWhiteSpace(RepositoryPath) ? Path.IsPathRooted(RepositoryPath)
+            ? RepositoryPath
+            : HostingEnvironment.MapPath(RepositoryPath) : null;
 
         public bool HasSiteFooterMessage
         {

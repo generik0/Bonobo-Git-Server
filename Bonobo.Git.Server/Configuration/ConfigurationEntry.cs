@@ -27,6 +27,11 @@ namespace Bonobo.Git.Server.Configuration
                 {
                     try
                     {
+
+                        if (!File.Exists(_configPath))
+                        {
+                            return new Entry();
+                        }
                         using (var stream = File.Open(_configPath, FileMode.Open))
                         {
                             _current = _serializer.Deserialize(stream) as Entry;
