@@ -4,13 +4,13 @@ using System.Linq;
 using Bonobo.Git.Server.Models;
 using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
-using Microsoft.Practices.Unity;
+
 
 namespace Bonobo.Git.Server.Data
 {
     public class EFTeamRepository : ITeamRepository
     {
-        [Dependency]
+        
         public Func<BonoboGitServerContext> CreateContext { get; set; }
 
         public IList<TeamModel> GetAllTeams()

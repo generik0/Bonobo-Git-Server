@@ -9,7 +9,7 @@ using Bonobo.Git.Server.Models;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Practices.Unity;
+
 
 using Owin;
 

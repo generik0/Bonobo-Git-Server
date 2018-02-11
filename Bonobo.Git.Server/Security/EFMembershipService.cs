@@ -5,14 +5,14 @@ using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.Models;
 using System.Security.Cryptography;
 using System.Data.Entity.Core;
-using Microsoft.Practices.Unity;
+
 using Serilog;
 
 namespace Bonobo.Git.Server.Security
 {
     public class EFMembershipService : IMembershipService
     {
-        [Dependency]
+        
         public Func<BonoboGitServerContext> CreateContext { get; set; }
 
         private readonly IPasswordService _passwordService;

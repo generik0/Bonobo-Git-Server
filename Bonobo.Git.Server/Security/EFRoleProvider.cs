@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Bonobo.Git.Server.Data;
-using Microsoft.Practices.Unity;
+
 
 namespace Bonobo.Git.Server.Security
 {
     public class EFRoleProvider : IRoleProvider
     {
-        [Dependency]
+        
         public Func<BonoboGitServerContext> CreateContext { get; set; }
 
         public void AddUserToRoles(Guid userId, string[] roleNames)

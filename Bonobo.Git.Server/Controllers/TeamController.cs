@@ -8,19 +8,19 @@ using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 using Bonobo.Git.Server.App_GlobalResources;
 
-using Microsoft.Practices.Unity;
+
 
 namespace Bonobo.Git.Server.Controllers
 {
     public class TeamController : Controller
     {
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public IRepositoryRepository RepositoryRepository { get; set; }
 
-        [Dependency]
+        
         public ITeamRepository TeamRepository { get; set; }
 
         [WebAuthorize(Roles = Definitions.Roles.Administrator)]

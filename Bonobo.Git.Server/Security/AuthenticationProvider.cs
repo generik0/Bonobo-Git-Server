@@ -5,7 +5,7 @@ using System.Linq;
 
 using Bonobo.Git.Server.Models;
 
-using Microsoft.Practices.Unity;
+
 
 using Owin;
 
@@ -13,10 +13,10 @@ namespace Bonobo.Git.Server.Security
 {
     public abstract class AuthenticationProvider : IAuthenticationProvider
     {
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public IRoleProvider RoleProvider { get; set; }
 
         public abstract void Configure(IAppBuilder app);

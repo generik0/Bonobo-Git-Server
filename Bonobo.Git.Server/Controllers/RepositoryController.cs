@@ -13,7 +13,7 @@ using Bonobo.Git.Server.Helpers;
 using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 using Ionic.Zip;
-using Microsoft.Practices.Unity;
+
 using MimeTypes;
 using System.Security.Principal;
 
@@ -21,19 +21,19 @@ namespace Bonobo.Git.Server.Controllers
 {
     public class RepositoryController : Controller
     {
-        [Dependency]
+        
         public ITeamRepository TeamRepository { get; set; }
 
-        [Dependency]
+        
         public IRepositoryRepository RepositoryRepository { get; set; }
 
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public IRepositoryPermissionService RepositoryPermissionService { get; set; }
 
-        [Dependency]
+        
         public IAuthenticationProvider AuthenticationProvider { get; set; }
 
         public ActionResult Index(string sortGroup = null, string searchString = null)

@@ -1,7 +1,7 @@
 using System.Data.Common;
 using Bonobo.Git.Server.Data.Mapping;
 using System.Data.Entity;
-using Microsoft.Practices.Unity;
+
 
 namespace Bonobo.Git.Server.Data
 {

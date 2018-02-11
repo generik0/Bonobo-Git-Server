@@ -4,14 +4,14 @@ using System.Linq;
 using Bonobo.Git.Server.Models;
 using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
-using Microsoft.Practices.Unity;
+
 using Serilog;
 
 namespace Bonobo.Git.Server.Data
 {
     public class EFRepositoryRepository : IRepositoryRepository
     {
-        [Dependency]
+        
         public Func<BonoboGitServerContext> CreateContext { get; set; }
 
         public IList<RepositoryModel> GetAllRepositories()

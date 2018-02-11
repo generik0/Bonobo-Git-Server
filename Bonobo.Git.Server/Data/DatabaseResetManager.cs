@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Remoting.Messaging;
 using Bonobo.Git.Server.Security;
-using Microsoft.Practices.Unity;
+
 using System.Configuration;
 using Serilog;
 
@@ -17,16 +17,16 @@ namespace Bonobo.Git.Server.Data
     /// </summary>
     public class DatabaseResetManager : IDatabaseResetManager
     {
-        [Dependency]
+        
         public IRepositoryRepository Repository { get; set; }
 
-        [Dependency]
+        
         public IRoleProvider RoleProvider { get; set; }
 
-        [Dependency]
+        
         public ITeamRepository TeamRepository { get; set; }
 
-        [Dependency]
+        
         public IMembershipService Users { get; set; }
 
         public void DoReset(int mode)

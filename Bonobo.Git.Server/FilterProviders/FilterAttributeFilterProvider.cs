@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Microsoft.Practices.Unity;
+using Autofac;
 
-public class UnityFilterAttributeFilterProvider : FilterAttributeFilterProvider
+public class FilterAttributeFilterProvider : System.Web.Mvc.FilterAttributeFilterProvider
 {
-    private readonly IUnityContainer _container;
+    private readonly ContainerBuilder _builder;
 
-    public UnityFilterAttributeFilterProvider(IUnityContainer container)
+    public FilterAttributeFilterProvider(ContainerBuilder builder)
     {
-        _container = container;
+        _builder = builder;
     }
 
     protected override IEnumerable<FilterAttribute> GetControllerAttributes(ControllerContext controllerContext, ActionDescriptor actionDescriptor)
@@ -17,7 +17,8 @@ public class UnityFilterAttributeFilterProvider : FilterAttributeFilterProvider
         var attributes = base.GetControllerAttributes(controllerContext, actionDescriptor).ToList();
         foreach (var attribute in attributes)
         {
-            _container.BuildUp(attribute.GetType(), attribute);
+            //_builder.BuildUp(attribute.GetType(), attribute);
+            _builder.RegisterType(attribute.GetType()).OnActivated(e => e.Context.InjectUnsetProperties(e.Instance));
         }
 
         return attributes;
@@ -28,7 +29,8 @@ public class UnityFilterAttributeFilterProvider : FilterAttributeFilterProvider
         var attributes = base.GetActionAttributes(controllerContext, actionDescriptor).ToList();
         foreach (var attribute in attributes)
         {
-            _container.BuildUp(attribute.GetType(), attribute);
+            //_builder.BuildUp(attribute.GetType(), attribute);
+            _builder.RegisterType(attribute.GetType()).OnActivated(e => e.Context.InjectUnsetProperties(e.Instance));
         }
 
         return attributes;

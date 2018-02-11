@@ -17,7 +17,7 @@ using Bonobo.Git.Server.Security;
 
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
-using Microsoft.Practices.Unity;
+
 using Bonobo.Git.Server.Owin.Windows;
 using System.Configuration;
 
@@ -25,13 +25,13 @@ namespace Bonobo.Git.Server.Controllers
 {
     public class HomeController : Controller
     {
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public IAuthenticationProvider AuthenticationProvider { get; set; }
 
-        [Dependency]
+        
         public IDatabaseResetManager ResetManager { get; set; }
 
         public ActionResult Index()

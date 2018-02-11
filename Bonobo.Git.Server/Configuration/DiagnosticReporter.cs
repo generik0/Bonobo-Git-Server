@@ -203,7 +203,7 @@ namespace Bonobo.Git.Server.Configuration
             _report.AppendLine("Exception Log");
             SafelyRun(() =>
             {
-                var nameFormat = MvcApplication.GetLogFileNameFormat();
+                var nameFormat = GetLogFileNameFormat();
                 var todayLogFileName = nameFormat.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd"));
                 SafelyReport("LogFileName: ", () => todayLogFileName);
                 var chunkSize = 10000;
@@ -291,6 +291,16 @@ namespace Bonobo.Git.Server.Configuration
         private void QuotedReport(string tag, object value)
         {
             Report(tag, "'"+value+"'");
+        }
+
+        public static string GetLogFileNameFormat()
+        {
+            string logDirectory = ConfigurationManager.AppSettings["LogDirectory"];
+            if (string.IsNullOrEmpty(logDirectory))
+            {
+                logDirectory = @"~\App_Data\Logs";
+            }
+            return Path.Combine(HostingEnvironment.MapPath(logDirectory), "log-{Date}.txt");
         }
     }
 }

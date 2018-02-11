@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Bonobo.Git.Server.Configuration;
 using Bonobo.Git.Server.Security;
 using System.Threading;
-using Microsoft.Practices.Unity;
+
 using Bonobo.Git.Server.Helpers;
 using Serilog;
 
@@ -17,7 +17,7 @@ namespace Bonobo.Git.Server.Data
 {
     public sealed class ADBackend
     {
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
         public ADBackendStore<RepositoryModel> Repositories { get { return repositories.Value; } }

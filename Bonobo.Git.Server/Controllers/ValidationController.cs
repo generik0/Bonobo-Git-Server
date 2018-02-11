@@ -1,7 +1,7 @@
 ﻿using Bonobo.Git.Server.Attributes;
 using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.Security;
-using Microsoft.Practices.Unity;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
@@ -12,13 +12,13 @@ namespace Bonobo.Git.Server.Controllers
     [OutputCache(Location = OutputCacheLocation.None, NoStore = true)]
     public class ValidationController : Controller
     {
-        [Dependency]
+        
         public IRepositoryRepository RepoRepo { get; set; }
 
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public ITeamRepository TeamRepo { get; set; }
 
         public ActionResult UniqueNameRepo(string name, Guid? id)

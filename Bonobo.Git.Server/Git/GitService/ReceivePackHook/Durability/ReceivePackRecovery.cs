@@ -1,11 +1,8 @@
-﻿using Bonobo.Git.Server.Data;
-using Bonobo.Git.Server.Git.GitService.ReceivePackHook;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 
 namespace Bonobo.Git.Server.Git.GitService.ReceivePackHook.Durability
 {

@@ -1,6 +1,6 @@
 using System.Web.Mvc;
 using Bonobo.Git.Server.Data;
-using Microsoft.Practices.Unity;
+
 
 namespace Bonobo.Git.Server
 {
@@ -20,7 +20,7 @@ namespace Bonobo.Git.Server
             _repositoryNameParameterName = repositoryNameParameterName;
         }
 
-        [Dependency]
+        
         public IRepositoryRepository RepositoryRepository { get; set; }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)

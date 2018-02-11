@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-
 using Bonobo.Git.Server.App_GlobalResources;
 using Bonobo.Git.Server.Configuration;
-using Bonobo.Git.Server.Extensions;
 using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 
 using Bonobo.Git.Server.Helpers;
-using System.DirectoryServices.AccountManagement;
 
-using Microsoft.Practices.Unity;
 using Serilog;
 using Microsoft.Owin.Security;
 
@@ -24,13 +17,13 @@ namespace Bonobo.Git.Server.Controllers
 {
     public class AccountController : Controller
     {
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public IRoleProvider RoleProvider { get; set; }
 
-        [Dependency]
+        
         public IAuthenticationProvider AuthenticationProvider { get; set; }
 
         [WebAuthorize]

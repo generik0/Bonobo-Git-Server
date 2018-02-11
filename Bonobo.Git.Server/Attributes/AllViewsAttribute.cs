@@ -1,7 +1,6 @@
 ﻿using Bonobo.Git.Server.App_GlobalResources;
 using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
-using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +32,7 @@ namespace Bonobo.Git.Server.Attributes
 
     public class AllViewsFilter : ActionFilterAttribute
     {
-        [Dependency]
+        
         public IRepositoryPermissionService RepoPermissions { get; set; }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)

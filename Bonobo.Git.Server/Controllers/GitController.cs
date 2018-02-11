@@ -9,7 +9,7 @@ using Bonobo.Git.Server.Git.GitService;
 using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 using Ionic.Zlib;
-using Microsoft.Practices.Unity;
+
 using Serilog;
 using Repository = LibGit2Sharp.Repository;
 
@@ -19,16 +19,16 @@ namespace Bonobo.Git.Server.Controllers
     [RepositoryNameNormalizer("repositoryName")]
     public class GitController : Controller
     {
-        [Dependency]
+        
         public IRepositoryPermissionService RepositoryPermissionService { get; set; }
 
-        [Dependency]
+        
         public IRepositoryRepository RepositoryRepository { get; set; }
 
-        [Dependency]
+        
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public IGitService GitService { get; set; }
 
         public ActionResult SecureGetInfoRefs(String repositoryName, String service)

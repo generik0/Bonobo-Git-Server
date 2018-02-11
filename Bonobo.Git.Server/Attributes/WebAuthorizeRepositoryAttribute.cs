@@ -3,14 +3,14 @@ using System.Web.Routing;
 using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.Security;
 
-using Microsoft.Practices.Unity;
+
 using System;
 
 namespace Bonobo.Git.Server
 {
     public class WebAuthorizeRepositoryAttribute : WebAuthorizeAttribute
     {
-        [Dependency]
+        
         public IRepositoryPermissionService RepositoryPermissionService { get; set; }
 
         public bool RequiresRepositoryAdministrator { get; set; }

@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Mvc;
 using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.Security;
-using Microsoft.Practices.Unity;
 using Bonobo.Git.Server.Helpers;
 using Serilog;
 
@@ -14,16 +13,15 @@ namespace Bonobo.Git.Server
 {
     public class GitAuthorizeAttribute : AuthorizeAttribute
     {
-        [Dependency]
         public IMembershipService MembershipService { get; set; }
 
-        [Dependency]
+        
         public IAuthenticationProvider AuthenticationProvider { get; set; }
 
-        [Dependency]
+        
         public IRepositoryPermissionService RepositoryPermissionService { get; set; }
 
-        [Dependency]
+        
         public IRepositoryRepository RepositoryRepository { get; set; }
 
         public static string GetRepoPath(string path, string applicationPath)

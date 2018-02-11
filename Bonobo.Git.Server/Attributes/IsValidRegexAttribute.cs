@@ -1,6 +1,6 @@
 ﻿using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.App_GlobalResources;
-using Microsoft.Practices.Unity;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
