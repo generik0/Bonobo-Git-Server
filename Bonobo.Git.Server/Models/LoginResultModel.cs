@@ -11,5 +11,6 @@ namespace Bonobo.Git.Server.Models
         public ICollection<string> Roles { get; set; }
         public ICollection<Team> Teams { get; set; }
         public string Exception { get; set; }
+        public VemToken Token { get; set; }
     }
 }
