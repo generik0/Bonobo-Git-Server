@@ -2,9 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Bonobo.Git.Server.Data;
+using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
-using Bonobo.Git.Server.ViewModules;
 using Nancy;
+using Newtonsoft.Json;
 
 namespace Bonobo.Git.Server.Modules
 {
@@ -14,20 +15,42 @@ namespace Bonobo.Git.Server.Modules
         private readonly IMembershipService MembershipService;
         private readonly IRoleProvider RoleProvider;
         private readonly ITeamRepository TeamRepository;
+        private readonly ITokenizer Tokenizer;
 
-        public SecurityModule(IMembershipService membershipService, IRoleProvider roleProvider, ITeamRepository teamRepository)
+        public SecurityModule(IMembershipService membershipService, IRoleProvider roleProvider, ITeamRepository teamRepository, ITokenizer tokenizer)
         {
             MembershipService = membershipService;
             RoleProvider = roleProvider;
             TeamRepository = teamRepository;
+            Tokenizer = tokenizer;
             Post["Security/login"] = _ => Login();
+            Post["Security/Authorize"] = _ => IsAuthorized();
+        }
+
+        private Response IsAuthorized()
+        {
+            try
+            {
+                var token = Request.Query?.Token?.ToString();
+                if(string.IsNullOrWhiteSpace(token))
+                {
+                    Response.AsJson(new LoginResultModel {Exception = "No token provided"}, HttpStatusCode.Forbidden);
+                }
+                var actual = Tokenizer.Decode(token);
+                return actual ? HttpStatusCode.Accepted : HttpStatusCode.Forbidden;
+
+            }
+            catch (Exception exception)
+            {
+                return Response.AsJson(new LoginResultModel { Exception = exception.Message }, HttpStatusCode.Forbidden);
+            }
         }
 
         private  Response Login()
         {
             try
             {
-                //e.g.http://localhost:51233/api/security/login?Username=admin&Password=admin
+                //e.g. http://localhost:8080/Bonobo.Git.Server/api/security/login?Tor=admin&Freja=admin
                 string userName = Request.Query.Tor?.ToString();    
                 string password = Request.Query.Freja?.ToString();
                 var result = MembershipService.ValidateUser(userName, password);
@@ -43,12 +66,14 @@ namespace Bonobo.Git.Server.Modules
                     Id = x.Id,
                     Name = x.Name,
                 }).ToArray();
+                var token = Tokenizer.Encode();
                 var vm = new LoginResultModel
                 {
                     Result = result,
                     UserModel = userModel,
                     Roles = roles,
-                    Teams = teams
+                    Teams = teams,
+                    Token = token
                 };
                 return Response.AsJson(vm);
             }
@@ -56,7 +81,6 @@ namespace Bonobo.Git.Server.Modules
             {
                 return Response.AsJson(new LoginResultModel{Exception = exception.Message}, HttpStatusCode.Forbidden);
             }
-            
         }
     }
 }

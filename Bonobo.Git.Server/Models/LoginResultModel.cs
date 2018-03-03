@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Bonobo.Git.Server.Data;
-using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 
-namespace Bonobo.Git.Server.ViewModules
+namespace Bonobo.Git.Server.Models
 {
     public class LoginResultModel
     {
@@ -13,5 +11,6 @@ namespace Bonobo.Git.Server.ViewModules
         public ICollection<string> Roles { get; set; }
         public ICollection<Team> Teams { get; set; }
         public string Exception { get; set; }
+        public VemToken Token { get; set; }
     }
 }

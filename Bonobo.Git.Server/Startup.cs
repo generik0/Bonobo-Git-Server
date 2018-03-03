@@ -135,6 +135,8 @@ namespace Bonobo.Git.Server
 
         private void RegisterDependencyResolver()
         {
+            Builder.RegisterType<Tokenizer>().As<ITokenizer>();
+
             switch (AuthenticationSettings.MembershipService.ToLowerInvariant())
             {
                 case "activedirectory":

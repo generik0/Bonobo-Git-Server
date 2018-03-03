@@ -93,6 +93,9 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="jose-jwt, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jose-jwt.2.4.0\lib\net461\jose-jwt.dll</HintPath>
+    </Reference>
     <Reference Include="LibGit2Sharp, Version=0.23.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.23.1\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
@@ -332,6 +335,7 @@
     <Compile Include="Helpers\RepositoryCommitModelHelpers.cs" />
     <Compile Include="IDbFactory.cs" />
     <Compile Include="Models\RepositoryCommitTitle.cs" />
+    <Compile Include="Models\VemToken.cs" />
     <Compile Include="Modules\SecurityModule.cs" />
     <Compile Include="Owin\NativeMethods.cs" />
     <Compile Include="Owin\WindowsAuthenticationDefaults.cs" />
@@ -349,6 +353,8 @@
     <Compile Include="Security\FederationAuthenticationProvider.cs" />
     <Compile Include="Security\IAuthenticationProvider.cs" />
     <Compile Include="Security\IRoleProvider.cs" />
+    <Compile Include="Security\ITokenizer.cs" />
+    <Compile Include="Security\Tokenizer.cs" />
     <Compile Include="Security\ValidationResult.cs" />
     <Compile Include="Security\WindowsAuthenticationProvider.cs" />
     <Compile Include="Startup.cs" />
@@ -429,7 +435,7 @@
     <Compile Include="FileDisplayHandler.cs" />
     <Compile Include="Security\PasswordService.cs" />
     <Compile Include="FilterProviders\FilterAttributeFilterProvider.cs" />
-    <Compile Include="ViewModules\LoginResultModel.cs" />
+    <Compile Include="Models\LoginResultModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\Git\antiword.exe" />
