@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Configuration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AllowAnonymousPush>false</AllowAnonymousPush>
+  <Repositories>~\App_Data\Repositories</Repositories>
+  <AllowUserRepositoryCreation>true</AllowUserRepositoryCreation>
+  <AllowPushToCreate>false</AllowPushToCreate>
+  <AllowAnonymousRegistration>false</AllowAnonymousRegistration>
+  <DefaultLanguage>en-US</DefaultLanguage>
+  <SiteTitle>Vem</SiteTitle>
+  <SiteFooterMessage>Version Equipment Manager</SiteFooterMessage>
+  <IsCommitAuthorAvatarVisible>true</IsCommitAuthorAvatarVisible>
+  <LinksUrl>versionequipmentmanager</LinksUrl>
+</Configuration>
