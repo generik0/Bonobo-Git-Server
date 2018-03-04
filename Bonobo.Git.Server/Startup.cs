@@ -119,21 +119,10 @@ namespace Bonobo.Git.Server
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.AppSettings()
-                .WriteTo.RollingFile(GetLogFileNameFormat())
                 .CreateLogger();
         }
 
-        public static string GetLogFileNameFormat()
-        {
-            string logDirectory = ConfigurationManager.AppSettings["LogDirectory"];
-            if (string.IsNullOrEmpty(logDirectory))
-            {
-                logDirectory = @"~\App_Data\Logs";
-            }
-            return Path.Combine(HostingEnvironment.MapPath(logDirectory), "log-{Date}.txt");
-        }
-
-        private void RegisterDependencyResolver()
+       private void RegisterDependencyResolver()
         {
             Builder.RegisterType<Tokenizer>().As<ITokenizer>();
 
