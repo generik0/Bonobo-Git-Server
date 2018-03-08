@@ -335,6 +335,7 @@
     <Compile Include="Helpers\RepositoryCommitModelHelpers.cs" />
     <Compile Include="IDbFactory.cs" />
     <Compile Include="Models\RepositoryCommitTitle.cs" />
+    <Compile Include="Models\Team.cs" />
     <Compile Include="Models\VemToken.cs" />
     <Compile Include="Modules\SecurityModule.cs" />
     <Compile Include="Owin\NativeMethods.cs" />

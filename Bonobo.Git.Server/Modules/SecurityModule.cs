@@ -64,7 +64,7 @@ namespace Bonobo.Git.Server.Modules
                 var userModel = MembershipService.GetUserModel(userName);
                 var roles = RoleProvider.GetRolesForUser(userModel.Id);
                 Log.Debug($"Roles for user: {userName} = " + "{roles}", roles);
-                var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x=>new Team
+                var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x=>new Models.Team
                 {
                     Id = x.Id,
                     Name = x.Name,
