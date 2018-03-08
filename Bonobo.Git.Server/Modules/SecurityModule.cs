@@ -63,7 +63,7 @@ namespace Bonobo.Git.Server.Modules
                 }
                 var userModel = MembershipService.GetUserModel(userName);
                 var roles = RoleProvider.GetRolesForUser(userModel.Id);
-                Log.Debug($"Teams for user: {userName} = " + "{roles}", roles);
+                Log.Debug($"Roles for user: {userName} = " + "{roles}", roles);
                 var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x=>new Team
                 {
                     Id = x.Id,
@@ -79,6 +79,7 @@ namespace Bonobo.Git.Server.Modules
                     Teams = teams,
                     Token = token
                 };
+                Log.Debug($"Returning model for user: {userName} = " + "{vm}", vm);
                 return Response.AsJson(vm);
             }
             catch (Exception exception)
