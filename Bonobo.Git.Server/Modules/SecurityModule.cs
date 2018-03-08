@@ -6,6 +6,7 @@ using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 using Nancy;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace Bonobo.Git.Server.Modules
 {
@@ -51,21 +52,24 @@ namespace Bonobo.Git.Server.Modules
             try
             {
                 //e.g. http://localhost:8080/Bonobo.Git.Server/api/security/login?Tor=admin&Freja=admin
-                string userName = Request.Query.Tor?.ToString();    
+                string userName = Request.Query.Tor?.ToString();
+                Log.Debug($"Login received for {userName}");
                 string password = Request.Query.Freja?.ToString();
                 var result = MembershipService.ValidateUser(userName, password);
+                Log.Debug($"Login result for user: {userName} = {result}");
                 if (result != ValidationResult.Success)
                 {
                     return Response.AsJson(result, HttpStatusCode.Forbidden);
                 }
-
                 var userModel = MembershipService.GetUserModel(userName);
                 var roles = RoleProvider.GetRolesForUser(userModel.Id);
+                Log.Debug($"Teams for user: {userName} = " + "{roles}", roles);
                 var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x=>new Team
                 {
                     Id = x.Id,
                     Name = x.Name,
                 }).ToArray();
+                Log.Debug($"Teams for user: {userName} = " +"{teams}", teams);
                 var token = Tokenizer.Encode();
                 var vm = new LoginResultModel
                 {
