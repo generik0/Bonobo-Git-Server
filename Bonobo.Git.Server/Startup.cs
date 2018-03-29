@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Helpers;
-using System.Web.Hosting;
+
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -32,6 +32,7 @@ using Nancy.Bootstrappers.Autofac;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
+using Serilog.Configuration;
 using Vem.Common.Logging;
 using Vem.Common.Logging.Interfaces;
 using Vem.Common.Utilities.Interfaces.Tokens;
