@@ -21,7 +21,7 @@ namespace Bonobo.Git.Server.Modules
         private readonly IRoleProvider RoleProvider;
         private readonly ITeamRepository TeamRepository;
         private readonly ITokenizer Tokenizer;
-        private string _privateKey;
+        private readonly string _privateKey;
 
         public SecurityModule(IMembershipService membershipService, IRoleProvider roleProvider, ITeamRepository teamRepository, ITokenizer tokenizer)
         {
@@ -72,7 +72,7 @@ namespace Bonobo.Git.Server.Modules
                 }).ToArray();
                 var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x => new Team
                 {
-                    Id = x.Id.ToString(),
+                    Guid = x.Id.ToString(),
                     Name = x.Name,
                 }).ToArray();
                 var appuser = new AppUser
@@ -83,13 +83,13 @@ namespace Bonobo.Git.Server.Modules
                     GivenName = userModel.GivenName,
                     Surname = userModel.Surname,
                     Email = userModel.Email,
-                    Id = userModel.Id.ToString(),
+                    Id = userModel.Id,
                     Username = userModel.Username,
                     SortName = userModel.Username,
                     IsAdmin = roles.Any(x=>x.Name.Equals("Administrator", StringComparison.InvariantCultureIgnoreCase)),
                     IsAgentAuthorized = teams?.Any(x=>x.Name.Equals("VEM-Agents", StringComparison.InvariantCultureIgnoreCase)) ??false,
                 };
-                appuser.AuthorizationToken = Tokenizer.Encode(appuser, _privateKey);
+                appuser.Token = Tokenizer.Encode(appuser, _privateKey);
                 Log.Debug($"Returning model for user: {userName} = " + "{vm}", appuser);
                 return Response.AsJson(appuser);
             }

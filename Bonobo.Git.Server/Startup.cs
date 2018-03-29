@@ -34,6 +34,8 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using Vem.Common.Logging;
 using Vem.Common.Logging.Interfaces;
+using Vem.Common.Utilities.Interfaces.Tokens;
+using Vem.Common.Utilities.Tokens;
 
 [assembly: OwinStartup(typeof(Bonobo.Git.Server.Startup))]
 
@@ -185,7 +187,7 @@ namespace Bonobo.Git.Server
             Builder.RegisterType<GitServiceExecutor>().As<IGitService>().PropertiesAutowired(); ;
             Builder.Register(c => new VemLogFactory(c.Resolve<IComponentContext>())).As<ILogFactory>().SingleInstance();
             Builder.Register(c => new SerilogLogger(Log.Logger, c.Resolve<ILogFactory>(), new SerilogLogAggregator())).As<Vem.Common.Logging.Interfaces.ILogger>().SingleInstance();
-
+            Builder.RegisterType<Tokenizer>().As<ITokenizer>(); 
         }
         
 
