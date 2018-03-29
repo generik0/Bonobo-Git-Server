@@ -75,7 +75,7 @@ namespace Bonobo.Git.Server.Modules
                     Guid = x.Id.ToString(),
                     Name = x.Name,
                 }).ToArray();
-                var appuser = new AppUser
+                var appUser = new AppUser
                 {
                     Teams = teams,
                     Roles = roles,
@@ -89,9 +89,9 @@ namespace Bonobo.Git.Server.Modules
                     IsAdmin = roles.Any(x=>x.Name.Equals("Administrator", StringComparison.InvariantCultureIgnoreCase)),
                     IsAgentAuthorized = teams?.Any(x=>x.Name.Equals("VEM-Agents", StringComparison.InvariantCultureIgnoreCase)) ??false,
                 };
-                appuser.Token = Tokenizer.Encode(appuser, _privateKey);
-                Log.Debug($"Returning model for user: {userName} = " + "{vm}", appuser);
-                return Response.AsJson(appuser);
+                appUser.Token = Tokenizer.Encode(appUser, _privateKey);
+                Log.Debug($"Returning model for user: {userName} = " + "{vm}", appUser);
+                return Response.AsJson(appUser);
             }
             catch (Exception exception)
             {
