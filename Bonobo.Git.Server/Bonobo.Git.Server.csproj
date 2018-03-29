@@ -382,6 +382,7 @@
     <Compile Include="Helpers\MembershipHelper.cs" />
     <Compile Include="Helpers\RepositoryCommitModelHelpers.cs" />
     <Compile Include="IDbFactory.cs" />
+    <Compile Include="VemLogFactory.cs" />
     <Compile Include="Models\RepositoryCommitTitle.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Models\VemToken.cs" />
@@ -402,8 +403,6 @@
     <Compile Include="Security\FederationAuthenticationProvider.cs" />
     <Compile Include="Security\IAuthenticationProvider.cs" />
     <Compile Include="Security\IRoleProvider.cs" />
-    <Compile Include="Security\ITokenizer.cs" />
-    <Compile Include="Security\Tokenizer.cs" />
     <Compile Include="Security\ValidationResult.cs" />
     <Compile Include="Security\WindowsAuthenticationProvider.cs" />
     <Compile Include="Startup.cs" />

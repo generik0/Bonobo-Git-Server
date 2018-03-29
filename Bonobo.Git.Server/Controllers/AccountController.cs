@@ -10,8 +10,9 @@ using Bonobo.Git.Server.Security;
 
 using Bonobo.Git.Server.Helpers;
 
-using Serilog;
+
 using Microsoft.Owin.Security;
+using Serilog;
 
 namespace Bonobo.Git.Server.Controllers
 {

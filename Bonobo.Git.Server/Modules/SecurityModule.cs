@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Bonobo.Git.Server.Data;
 using Bonobo.Git.Server.Models;
 using Bonobo.Git.Server.Security;
 using Nancy;
-using Newtonsoft.Json;
 using Serilog;
+using Vem.Common.Dtos.Securities;
+using Vem.Common.Utilities.Interfaces.Tokens;
+using Team = Vem.Common.Dtos.Securities.Team;
+using Role = Vem.Common.Dtos.Securities.Role;
 
 namespace Bonobo.Git.Server.Modules
 {
@@ -17,6 +21,7 @@ namespace Bonobo.Git.Server.Modules
         private readonly IRoleProvider RoleProvider;
         private readonly ITeamRepository TeamRepository;
         private readonly ITokenizer Tokenizer;
+        private string _privateKey;
 
         public SecurityModule(IMembershipService membershipService, IRoleProvider roleProvider, ITeamRepository teamRepository, ITokenizer tokenizer)
         {
@@ -26,6 +31,7 @@ namespace Bonobo.Git.Server.Modules
             Tokenizer = tokenizer;
             Post["Security/login"] = _ => Login();
             Post["Security/Authorize"] = _ => IsAuthorized();
+            _privateKey = ConfigurationManager.AppSettings["TokenRawData"];
         }
 
         private Response IsAuthorized()
@@ -33,12 +39,8 @@ namespace Bonobo.Git.Server.Modules
             try
             {
                 var token = Request.Query?.Token?.ToString();
-                if(string.IsNullOrWhiteSpace(token))
-                {
-                    Response.AsJson(new LoginResultModel {Exception = "No token provided"}, HttpStatusCode.Forbidden);
-                }
-                var actual = Tokenizer.Decode(token);
-                return actual ? HttpStatusCode.Accepted : HttpStatusCode.Forbidden;
+                var actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
+                return actual!=null ? HttpStatusCode.Accepted : HttpStatusCode.Forbidden;
 
             }
             catch (Exception exception)
@@ -62,25 +64,34 @@ namespace Bonobo.Git.Server.Modules
                     return Response.AsJson(result, HttpStatusCode.Forbidden);
                 }
                 var userModel = MembershipService.GetUserModel(userName);
-                var roles = RoleProvider.GetRolesForUser(userModel.Id);
-                Log.Debug($"Roles for user: {userName} = " + "{roles}", roles);
-                var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x=>new Models.Team
+
+
+                var roles = RoleProvider.GetRolesForUser(userModel.Id).Select(x=>new Role
                 {
-                    Id = x.Id,
+                    Name = x
+                }).ToArray();
+                var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x => new Team
+                {
+                    Id = x.Id.ToString(),
                     Name = x.Name,
                 }).ToArray();
-                Log.Debug($"Teams for user: {userName} = " +"{teams}", teams);
-                var token = Tokenizer.Encode();
-                var vm = new LoginResultModel
+                var appuser = new AppUser
                 {
-                    Result = result,
-                    UserModel = userModel,
-                    Roles = roles,
                     Teams = teams,
-                    Token = token
+                    Roles = roles,
+                    DisplayName = userModel.DisplayName,
+                    GivenName = userModel.GivenName,
+                    Surname = userModel.Surname,
+                    Email = userModel.Email,
+                    Id = userModel.Id.ToString(),
+                    Username = userModel.Username,
+                    SortName = userModel.Username,
+                    IsAdmin = roles.Any(x=>x.Name.Equals("Administrator", StringComparison.InvariantCultureIgnoreCase)),
+                    IsAgentAuthorized = teams?.Any(x=>x.Name.Equals("VEM-Agents", StringComparison.InvariantCultureIgnoreCase)) ??false,
                 };
-                Log.Debug($"Returning model for user: {userName} = " + "{vm}", vm);
-                return Response.AsJson(vm);
+                appuser.AuthorizationToken = Tokenizer.Encode(appuser, _privateKey);
+                Log.Debug($"Returning model for user: {userName} = " + "{vm}", appuser);
+                return Response.AsJson(appuser);
             }
             catch (Exception exception)
             {

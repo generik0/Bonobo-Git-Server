@@ -32,6 +32,8 @@ using Nancy.Bootstrappers.Autofac;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
+using Vem.Common.Logging;
+using Vem.Common.Logging.Interfaces;
 
 [assembly: OwinStartup(typeof(Bonobo.Git.Server.Startup))]
 
@@ -124,8 +126,6 @@ namespace Bonobo.Git.Server
 
        private void RegisterDependencyResolver()
         {
-            Builder.RegisterType<Tokenizer>().As<ITokenizer>();
-
             switch (AuthenticationSettings.MembershipService.ToLowerInvariant())
             {
                 case "activedirectory":
@@ -183,6 +183,9 @@ namespace Bonobo.Git.Server
             }
 
             Builder.RegisterType<GitServiceExecutor>().As<IGitService>().PropertiesAutowired(); ;
+            Builder.Register(c => new VemLogFactory(c.Resolve<IComponentContext>())).As<ILogFactory>().SingleInstance();
+            Builder.Register(c => new SerilogLogger(Log.Logger, c.Resolve<ILogFactory>(), new SerilogLogAggregator())).As<Vem.Common.Logging.Interfaces.ILogger>().SingleInstance();
+
         }
         
 
