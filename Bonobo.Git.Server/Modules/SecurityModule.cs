@@ -45,9 +45,8 @@ namespace Bonobo.Git.Server.Modules
         {
             try
             {
-                var token = Request.Query?.Token?.ToString();
-                AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
-                return actual!=null ? HttpStatusCode.Accepted : HttpStatusCode.Forbidden;
+                var actual = GetAuthorizationToken();
+                return actual == null ? HttpStatusCode.Forbidden : HttpStatusCode.OK;
 
             }
             catch (Exception exception)
@@ -60,9 +59,13 @@ namespace Bonobo.Git.Server.Modules
         {
             try
             {
-                var token = Request.Query?.Token?.ToString();
-                AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
-                return actual == null ? HttpStatusCode.Forbidden : Response.AsJson(actual.IsAdmin);
+                var actual = GetAuthorizationToken();
+                if (actual == null)
+                {
+                    return HttpStatusCode.Forbidden;
+                }
+                var response = Tokenizer.Encode(new IsResponse {Is = actual.IsAdmin }, UserHostAddress());
+                return Response.AsJson(response);
             }
             catch (Exception exception)
             {
@@ -72,9 +75,13 @@ namespace Bonobo.Git.Server.Modules
 
         private Response IsAgentAuthorized()
         {
-            var token = Request.Query?.Token?.ToString();
-            AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, PrivateKeyUserHostAddress());
-            return actual == null ? HttpStatusCode.Forbidden : Response.AsJson(actual.IsAgentAuthorized);
+            var actual = GetAuthorizationToken();
+            if (actual == null)
+            {
+                return HttpStatusCode.Forbidden;
+            }
+            var response = Tokenizer.Encode(new IsResponse { Is = actual.IsAgentAuthorized }, UserHostAddress());
+            return Response.AsJson(response);
         }
 
         private  Response Login()
@@ -143,6 +150,15 @@ namespace Bonobo.Git.Server.Modules
             }
 
             return Request.UserHostAddress;
+        }
+
+        private AuthorizationToken GetAuthorizationToken()
+        {
+            string token = Request.Query.Token?.ToString();
+            var requestModel = Tokenizer.Decode<string>(token, UserHostAddress());
+            var x = requestModel.Value;
+            var actual = Tokenizer.Decode<AuthorizationToken>(x, _privateKey)?.Value;
+            return actual;
         }
     }
 }
