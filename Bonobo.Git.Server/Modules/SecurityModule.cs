@@ -68,7 +68,7 @@ namespace Bonobo.Git.Server.Modules
         private Response IsAgentAuthorized()
         {
             var token = Request.Query?.Token?.ToString();
-            AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
+            AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, PrivateKeyUserHostAddress());
             return actual == null ? HttpStatusCode.Forbidden : Response.AsJson(actual.IsAgentAuthorized);
         }
 
@@ -114,12 +114,18 @@ namespace Bonobo.Git.Server.Modules
                 };
                 appUser.Token = Tokenizer.Encode(appUser, _privateKey);
                 Log.Debug($"Returning model for user: {userName} = " + "{vm}", appUser);
-                return Response.AsJson(appUser);
+                var response = Tokenizer.Encode(appUser, Request.UserHostAddress);
+                return Response.AsJson(response);
             }
             catch (Exception exception)
             {
                 return Response.AsJson(new LoginResultModel{Exception = exception.Message}, HttpStatusCode.Forbidden);
             }
+        }
+
+        private string PrivateKeyUserHostAddress()
+        {
+            return $"{_privateKey}-{Request.UserHostAddress}";
         }
     }
 }

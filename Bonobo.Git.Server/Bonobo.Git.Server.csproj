@@ -283,11 +283,11 @@
     <Reference Include="Ude, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UDE.CSharp.1.1.0\lib\Ude.dll</HintPath>
     </Reference>
-    <Reference Include="Vem.Common.Attributes, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Vem.Common.Attributes.1.1.33\lib\net471\Vem.Common.Attributes.dll</HintPath>
+    <Reference Include="Vem.Common.Attributes, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vem.Common.Attributes.1.2.1\lib\net471\Vem.Common.Attributes.dll</HintPath>
     </Reference>
-    <Reference Include="Vem.Common.Dtos, Version=1.1.20.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Vem.Common.Dtos.1.1.20\lib\net471\Vem.Common.Dtos.dll</HintPath>
+    <Reference Include="Vem.Common.Dtos, Version=1.1.25.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vem.Common.Dtos.1.1.25\lib\net471\Vem.Common.Dtos.dll</HintPath>
     </Reference>
     <Reference Include="Vem.Common.Logging, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Vem.Common.Logging.1.2.2\lib\net471\Vem.Common.Logging.dll</HintPath>
