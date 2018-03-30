@@ -117,7 +117,7 @@ namespace Bonobo.Git.Server.Modules
                     Username = userModel.Username,
                     SortName = userModel.Username,
                     IsAdmin = roles.Any(x=>x.Name.Equals("Administrator", StringComparison.InvariantCultureIgnoreCase)),
-                    IsAgentAuthorized = teams?.Any(x=>x.Name.Equals("VEM-Agents", StringComparison.InvariantCultureIgnoreCase)) ??false,
+                    IsAgentAuthorized = teams?.Any(x=>x.Name.Equals("VEM-Agents", StringComparison.InvariantCultureIgnoreCase)) ?? false,
                 };
                 appUser.Token = Tokenizer.Encode(appUser, _privateKey);
                 Log.Debug($"Returning model for user: {userName} = " + "{vm}", appUser);
