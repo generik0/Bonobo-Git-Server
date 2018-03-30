@@ -289,11 +289,11 @@
     <Reference Include="Vem.Common.Dtos, Version=1.1.25.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Vem.Common.Dtos.1.1.25\lib\net471\Vem.Common.Dtos.dll</HintPath>
     </Reference>
-    <Reference Include="Vem.Common.Logging, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Vem.Common.Logging.1.2.2\lib\net471\Vem.Common.Logging.dll</HintPath>
+    <Reference Include="Vem.Common.Logging, Version=1.2.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vem.Common.Logging.1.2.7\lib\net471\Vem.Common.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Vem.Common.Utilities, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Vem.Common.Utilities.1.2.3\lib\net471\Vem.Common.Utilities.dll</HintPath>
+    <Reference Include="Vem.Common.Utilities, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vem.Common.Utilities.1.2.10\lib\net471\Vem.Common.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
