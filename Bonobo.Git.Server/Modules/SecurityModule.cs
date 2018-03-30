@@ -30,7 +30,9 @@ namespace Bonobo.Git.Server.Modules
             TeamRepository = teamRepository;
             Tokenizer = tokenizer;
             Post["Security/login"] = _ => Login();
-            Post["Security/Authorize"] = _ => IsAuthorized();
+            Post["Security/IsAuthorized"] = _ => IsAuthorized();
+            Post["Security/IsAdministrator"] = _ => IsAdministrator();
+            Post["Security/IsAgentAuthorized"] = _ => IsAgentAuthorized();
             _privateKey = ConfigurationManager.AppSettings["TokenRawData"];
         }
 
@@ -39,7 +41,7 @@ namespace Bonobo.Git.Server.Modules
             try
             {
                 var token = Request.Query?.Token?.ToString();
-                var actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
+                AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
                 return actual!=null ? HttpStatusCode.Accepted : HttpStatusCode.Forbidden;
 
             }
@@ -47,6 +49,27 @@ namespace Bonobo.Git.Server.Modules
             {
                 return Response.AsJson(new LoginResultModel { Exception = exception.Message }, HttpStatusCode.Forbidden);
             }
+        }
+
+        private Response IsAdministrator()
+        {
+            try
+            {
+                var token = Request.Query?.Token?.ToString();
+                AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
+                return actual == null ? HttpStatusCode.Forbidden : Response.AsJson(actual.IsAdmin);
+            }
+            catch (Exception exception)
+            {
+                return Response.AsJson(new LoginResultModel { Exception = exception.Message }, HttpStatusCode.Forbidden);
+            }
+        }
+
+        private Response IsAgentAuthorized()
+        {
+            var token = Request.Query?.Token?.ToString();
+            AuthorizationToken actual = Tokenizer.Decode<AuthorizationToken>(token, _privateKey);
+            return actual == null ? HttpStatusCode.Forbidden : Response.AsJson(actual.IsAgentAuthorized);
         }
 
         private  Response Login()
