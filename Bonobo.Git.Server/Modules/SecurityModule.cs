@@ -121,7 +121,7 @@ namespace Bonobo.Git.Server.Modules
                 };
                 appUser.Token = Tokenizer.Encode(appUser, _privateKey);
                 Log.Debug($"Returning model for user: {userName} = " + "{vm}", appUser);
-                var response = Tokenizer.Encode(appUser, Request.UserHostAddress);
+                var response = Tokenizer.Encode(appUser, UserHostAddress());
                 return Response.AsJson(response);
             }
             catch (Exception exception)
