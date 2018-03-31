@@ -80,7 +80,7 @@ namespace Bonobo.Git.Server.Modules
             {
                 return HttpStatusCode.Forbidden;
             }
-            var response = Tokenizer.Encode(new IsResponse { Is = actual.IsAgentAuthorized }, UserHostAddress());
+            var response = Tokenizer.Encode(new IsResponse { Is = actual.IsAgentAuthorized || actual.IsAgentAuthorized }, UserHostAddress());
             return Response.AsJson(response);
         }
 
