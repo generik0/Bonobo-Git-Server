@@ -35,9 +35,9 @@ namespace Bonobo.Git.Server.Modules
             DnsWrapper = dnsWrapper;
 
             Post["Security/login"] = _ => Login();
-            Post["Security/IsAuthorized"] = _ => IsAuthorized();
-            Post["Security/IsAdministrator"] = _ => IsAdministrator();
-            Post["Security/IsAgentAuthorized"] = _ => IsAgentAuthorized();
+            Get["Security/IsAuthorized"] = _ => IsAuthorized();
+            Get["Security/IsAdministrator"] = _ => IsAdministrator();
+            Get["Security/IsAgentAuthorized"] = _ => IsAgentAuthorized();
             _privateKey = ConfigurationManager.AppSettings["TokenRawData"];
         }
 
@@ -107,11 +107,12 @@ namespace Bonobo.Git.Server.Modules
                 {
                     Name = x
                 }).ToArray();
-                var teams = TeamRepository.GetTeams(userModel.Id)?.Select(x => new Team
+                var teamModels = TeamRepository.GetTeams(userModel.Id);
+                var teams = teamModels?.Select(x => new Team
                 {
                     Guid = x.Id,
                     Name = x.Name,
-                }).ToArray();
+                }).ToList();
                 var appUser = new AppUser
                 {
                     Teams = teams,
